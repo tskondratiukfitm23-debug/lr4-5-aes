@@ -1,0 +1,145 @@
+
+=================== 1. Ініціалізація ключа (PBKDF2-HMAC-SHA256, 310000 ітерацій, salt 16 B) ===================
+$ python3 aes_cli.py key new --label lab-main --expires-days 180 --max-uses 100000
+✅ Ключ створено: label=lab-main key_id=5b3ef446988dd614 KDF={'name': 'pbkdf2-hmac-sha256', 'iterations': 310000} дійсний до 2027-05-23T20:20:55Z ліміт=100000
+[код виходу: 0]
+$ python3 aes_cli.py key list
+LABEL         KEY_ID            STATUS   BITS      USES  EXPIRES              KDF
+lab-main      5b3ef446988dd614  active   256          0  2027-05-23T20:20:55Z pbkdf2-hmac-sha256/310000
+[код виходу: 0]
+$ python3 aes_cli.py key verify --label lab-main
+✅ Пароль правильний для lab-main (5b3ef446988dd614)
+[код виходу: 0]
+
+=================== 2. Режими та параметри ===================
+$ python3 aes_cli.py modes
+• aes-gcm            AES-GCM
+    ключ: (128, 192, 256)  IV/nonce: (12, 16) (типово 12)  padding: ('none',)  тег: (12, 13, 14, 15, 16) (типово 16)  псевдоніми: ('gcm',)
+    безпека: AEAD (конфіденційність + цілісність + автентичність), 1 прохід, паралелізується
+    ризики:  Повтор nonce катастрофічний (витік XOR відкритих текстів і ключа H → підробка тегів); ≤2^32 повідомлень на ключ із випадковими nonce; ≤64 GiB на повідомлення; укорочений тег слабший
+• aes-cbc-hmac       AES-CBC + HMAC-SHA256
+    ключ: (128, 192, 256)  IV/nonce: (16,) (типово 16)  padding: ('pkcs7', 'ansix923', 'iso7816')  тег: (16, 20, 24, 28, 32) (типово 32)  псевдоніми: ('cbc',)
+    безпека: Конфіденційність (CBC) + цілісність/автентичність (HMAC, EtM); шифрування послідовне
+    ризики:  Без MAC або з MAC-then-Encrypt — padding oracle (Vaudenay 2002, POODLE, Lucky13); IV має бути непередбачуваним; повтор IV розкриває спільні префікси; 2 проходи при дешифруванні
+• aes-ctr-hmac       AES-CTR + HMAC-SHA256
+    ключ: (128, 192, 256)  IV/nonce: (16,) (типово 16)  padding: ('none',)  тег: (16, 20, 24, 28, 32) (типово 32)  псевдоніми: ('ctr',)
+    безпека: Потоковий режим без доповнення, паралелізується; цілісність через HMAC (EtM)
+    ризики:  Повтор лічильника/nonce = повтор гами (XOR відкритих текстів); без MAC — повна пластичність (bit-flipping)
+• aes-cfb-hmac       AES-CFB + HMAC-SHA256
+    ключ: (128, 192, 256)  IV/nonce: (16,) (типово 16)  padding: ('none',)  тег: (16, 20, 24, 28, 32) (типово 32)  псевдоніми: ('cfb',)
+    безпека: Самосинхронізований потоковий режим; цілісність через HMAC (EtM)
+    ризики:  Шифрування послідовне (повільніше); повтор IV розкриває перший блок; без MAC — пластичність
+• chacha20-poly1305  ChaCha20-Poly1305 (не-AES)
+    ключ: (256,)  IV/nonce: (7,) (типово 7)  padding: ('none',)  тег: (16,) (типово 16)  псевдоніми: ('chacha',)
+    безпека: AEAD (RFC 8439), швидкий і константночасовий без апаратного AES; сегментований STREAM
+    ризики:  Повтор nonce катастрофічний (як у GCM); не схвалений FIPS; лише 256-бітний ключ
+• aes-gcm-siv        AES-GCM-SIV
+    ключ: (128, 256)  IV/nonce: (7,) (типово 7)  padding: ('none',)  тег: (16,) (типово 16)  псевдоніми: ('siv',)
+    безпека: AEAD, стійкий до повтору nonce (RFC 8452): повтор розкриває лише рівність повідомлень
+    ризики:  Двопрохідний (повільніший за GCM); потребує OpenSSL ≥ 3.2; не потоковий — лише посегментно
+[код виходу: 0]
+
+=================== 3. Шифрування/дешифрування AES-GCM ===================
+$ python3 aes_cli.py enc --in data/sample.txt --out outputs/demo/sample_gcm.enc --label lab-main --mode gcm --aad doc=LR4
+✅ Зашифровано [aes-gcm, AES-256] 260 → 448 B за 0.0067 с → outputs/demo/sample_gcm.enc
+[код виходу: 0]
+$ python3 aes_cli.py info --in outputs/demo/sample_gcm.enc
+{
+  "aad": true,
+  "created": "2026-11-24T20:20:55Z",
+  "iv": "187147c395244103ee6faf77",
+  "key_bits": 256,
+  "key_id": "5b3ef446988dd614",
+  "mode": "aes-gcm",
+  "pad": "none",
+  "tag": 16,
+  "v": 2,
+  "_header_len": 172,
+  "_file_size": 448
+}
+[код виходу: 0]
+$ python3 aes_cli.py dec --in outputs/demo/sample_gcm.enc --out outputs/demo/sample_gcm.dec --aad doc=LR4
+✅ Розшифровано й автентифіковано [aes-gcm] 448 → 260 B за 0.0041 с → outputs/demo/sample_gcm.dec
+[код виходу: 0]
+$ cmp data/sample.txt outputs/demo/sample_gcm.dec
+[код виходу: 0]
+Файли ідентичні
+
+=================== 4. AES-CBC+HMAC з AES-192 і доповненням ISO/IEC 7816-4; ChaCha20-Poly1305 ===================
+$ python3 aes_cli.py enc --in data/sample.txt --out outputs/demo/sample_cbc.enc --label lab-main --mode cbc --key-bits 192 --padding iso7816 --tag-len 24
+✅ Зашифровано [aes-cbc-hmac, AES-192] 260 → 485 B за 0.0082 с → outputs/demo/sample_cbc.enc
+[код виходу: 0]
+$ python3 aes_cli.py dec --in outputs/demo/sample_cbc.enc --out outputs/demo/sample_cbc.dec
+✅ Розшифровано й автентифіковано [aes-cbc-hmac] 485 → 260 B за 0.0067 с → outputs/demo/sample_cbc.dec
+[код виходу: 0]
+$ python3 aes_cli.py enc --in data/sample.txt --out outputs/demo/sample_chacha.enc --label lab-main --mode chacha20-poly1305
+✅ Зашифровано [chacha20-poly1305, AES-256] 260 → 461 B за 0.0052 с → outputs/demo/sample_chacha.enc
+[код виходу: 0]
+$ python3 aes_cli.py dec --in outputs/demo/sample_chacha.enc --out outputs/demo/sample_chacha.dec
+✅ Розшифровано й автентифіковано [chacha20-poly1305] 461 → 260 B за 0.0029 с → outputs/demo/sample_chacha.dec
+[код виходу: 0]
+
+=================== 5. Аномалії: підміна байта, неправильна AAD, неправильний пароль, не-контейнер ===================
+$ python3 aes_cli.py dec --in outputs/demo/sample_gcm_tampered.enc --out outputs/demo/tampered.dec --aad doc=LR4
+❌ ПОМИЛКА [TAMPER_DETECTED]: Виявлено втручання: тег автентичності не збігся (дані/заголовок змінено або інша AAD)
+[код виходу: 20]
+$ ls outputs/demo/tampered.dec
+ls: cannot access 'outputs/demo/tampered.dec': No such file or directory
+[код виходу: 2]
+$ python3 aes_cli.py dec --in outputs/demo/sample_gcm.enc --out outputs/demo/x.dec --aad doc=LR5
+❌ ПОМИЛКА [TAMPER_DETECTED]: Виявлено втручання: тег автентичності не збігся (дані/заголовок змінено або інша AAD)
+[код виходу: 20]
+$ python3 aes_cli.py dec --in outputs/demo/sample_gcm.enc --out outputs/demo/x.dec
+❌ ПОМИЛКА [WRONG_PASSWORD]: Неправильний пароль для ключа 'lab-main'
+[код виходу: 30]
+$ python3 aes_cli.py dec --in data/sample.txt --out outputs/demo/x.dec
+❌ ПОМИЛКА [BAD_MAGIC]: Файл не є контейнером AES-Lab (неправильна сигнатура)
+[код виходу: 10]
+
+=================== 6. REPL: зміна режиму і параметрів без перезапуску ===================
+AES-Lab shell. Введіть 'help' для списку команд, 'status' — поточні налаштування, 'quit' — вихід.
+Режим і параметри можна змінювати будь-коли: mode <назва>, set <параметр> <значення>.
+[aes-gcm | AES-256 | key=-]> Ключ 'lab-main' (5b3ef446988dd614) розблоковано
+[aes-gcm | AES-256 | key=lab-main]> Ключ: lab-main (5b3ef446988dd614, active, використань 3)
+Параметри: {"mode": "aes-gcm", "key_bits": 256, "block_size": 128, "iv_len": 12, "padding": "none", "tag_len": 16, "aad": false, "segment_size": null}
+[aes-gcm | AES-256 | key=lab-main]> Режим → aes-cbc-hmac (параметри скинуто до типових: IV=16, padding=pkcs7, тег=32, ключ AES-256)
+[aes-cbc-hmac | AES-256 | key=lab-main]> OK: {"mode": "aes-cbc-hmac", "key_bits": 256, "block_size": 128, "iv_len": 16, "padding": "ansix923", "tag_len": 32, "aad": false, "segment_size": null}
+[aes-cbc-hmac | AES-256 | key=lab-main]> ✅ aes-cbc-hmac: 260 → 494 B, 0.0118 с → outputs/demo/repl_cbc.enc
+[aes-cbc-hmac | AES-256 | key=lab-main]> Режим → aes-ctr-hmac (параметри скинуто до типових: IV=16, padding=none, тег=32, ключ AES-256)
+[aes-ctr-hmac | AES-256 | key=lab-main]> ✅ aes-ctr-hmac: 260 → 478 B, 0.0049 с → outputs/demo/repl_ctr.enc
+[aes-ctr-hmac | AES-256 | key=lab-main]> Режим → aes-gcm (параметри скинуто до типових: IV=12, padding=none, тег=16, ключ AES-256)
+[aes-gcm | AES-256 | key=lab-main]> OK: {"mode": "aes-gcm", "key_bits": 256, "block_size": 128, "iv_len": 12, "padding": "none", "tag_len": 12, "aad": false, "segment_size": null}
+[aes-gcm | AES-256 | key=lab-main]> ❌ ПОМИЛКА [INVALID_PARAMS]: AES-GCM: довжина IV/nonce 3 байт неприпустима (допустимо (12, 16))
+[aes-gcm | AES-256 | key=lab-main]> ✅ aes-gcm: 260 → 445 B, 0.0049 с → outputs/demo/repl_gcm.enc
+[aes-gcm | AES-256 | key=lab-main]> ✅ aes-cbc-hmac: автентичність підтверджено, 260 B → outputs/demo/repl_cbc.dec
+[aes-gcm | AES-256 | key=lab-main]> ✅ aes-ctr-hmac: автентичність підтверджено, 260 B → outputs/demo/repl_ctr.dec
+[aes-gcm | AES-256 | key=lab-main]> ✅ aes-gcm: автентичність підтверджено, 260 B → outputs/demo/repl_gcm.dec
+[aes-gcm | AES-256 | key=lab-main]> Ключ: lab-main (5b3ef446988dd614, active, використань 6)
+Параметри: {"mode": "aes-gcm", "key_bits": 256, "block_size": 128, "iv_len": 12, "padding": "none", "tag_len": 12, "aad": false, "segment_size": null}
+[aes-gcm | AES-256 | key=lab-main]> До побачення.
+[код виходу: 0]
+
+=================== 7. Ротація ключа та перешифрування старого файлу ===================
+$ python3 aes_cli.py key rotate --label lab-main
+✅ Ротацію виконано: 5b3ef446988dd614 → retired; новий активний ключ f25e6ec9209881ad
+[код виходу: 0]
+$ python3 aes_cli.py key list
+LABEL         KEY_ID            STATUS   BITS      USES  EXPIRES              KDF
+lab-main      5b3ef446988dd614  retired  256          6  2027-05-23T20:20:55Z pbkdf2-hmac-sha256/310000
+lab-main      f25e6ec9209881ad  active   256          0  2027-05-23T20:20:57Z pbkdf2-hmac-sha256/310000
+[код виходу: 0]
+$ python3 aes_cli.py rekey --in outputs/demo/sample_gcm.enc --out outputs/demo/sample_rekeyed.enc --label lab-main --aad doc=LR4
+✅ Перешифровано: 5b3ef446988dd614 → f25e6ec9209881ad [aes-gcm] → outputs/demo/sample_rekeyed.enc
+[код виходу: 0]
+$ python3 aes_cli.py dec --in outputs/demo/sample_rekeyed.enc --out outputs/demo/sample_rekeyed.dec --aad doc=LR4
+✅ Розшифровано й автентифіковано [aes-gcm] 448 → 260 B за 0.0044 с → outputs/demo/sample_rekeyed.dec
+[код виходу: 0]
+$ python3 aes_cli.py enc --in data/sample.txt --out outputs/demo/old_key.enc --label lab-main --mode gcm
+❌ ПОМИЛКА [WRONG_PASSWORD]: Неправильний пароль для ключа 'lab-main'
+[код виходу: 30]
+
+=================== 8. Аналіз журналу ===================
+$ python3 log_analyzer.py --log logs/aes.jsonl --out outputs/log_report.md
+Записів: 44, сесій: 17, помилок: 5, аномалій: 0
+Звіт → outputs/log_report.md
+[код виходу: 0]

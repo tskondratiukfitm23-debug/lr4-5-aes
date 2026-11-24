@@ -1,0 +1,105 @@
+id,scenario,mode,detected,error_code,exit_code,output_created,comment
+T00,Контроль: немодифікований файл,aes-gcm,НІ,—,0,так,очікується успіх
+T01,Інверсія біта в середині шифротексту,aes-gcm,так,TAMPER_DETECTED,20,ні,
+T02,Зміна першого байта шифротексту,aes-gcm,так,TAMPER_DETECTED,20,ні,
+T03,Зміна останнього байта тегу/HMAC,aes-gcm,так,TAMPER_DETECTED,20,ні,
+T04,Підміна IV/nonce у заголовку,aes-gcm,так,TAMPER_DETECTED,20,ні,
+T05,Підміна алгоритму/параметрів у заголовку (downgrade),aes-gcm,так,TAMPER_DETECTED,20,ні,
+T06,Підміна key_id у заголовку,aes-gcm,так,KEY_MISMATCH,23,ні,
+T07,Пошкодження сигнатури MAGIC,aes-gcm,так,BAD_MAGIC,10,ні,
+T08,Обрізання хвоста (−5 байтів),aes-gcm,так,TAMPER_DETECTED,20,ні,
+T09,Обрізання тіла (половина / по межі сегмента STREAM),aes-gcm,так,TAMPER_DETECTED,20,ні,
+T10,Обрізання до неповного заголовка,aes-gcm,так,TRUNCATED,12,ні,
+T11,Додавання 16 байтів у кінець,aes-gcm,так,TAMPER_DETECTED,20,ні,
+T12,Перестановка блоків 0↔1 (для STREAM — сегментів),aes-gcm,так,TAMPER_DETECTED,20,ні,
+T13,Неправильна AAD (контекст),aes-gcm,так,TAMPER_DETECTED,20,ні,
+T14,Неправильний пароль,aes-gcm,так,WRONG_PASSWORD,30,ні,"verifier у keystore, дешифрування не починалось"
+T15,Неправильний ключ (в обхід перевірки пароля),aes-gcm,так,AUTH_FAILED,21,ні,тег не збігся: підміна чи хибний ключ — нерозрізненно
+T00,Контроль: немодифікований файл,aes-cbc-hmac,НІ,—,0,так,очікується успіх
+T01,Інверсія біта в середині шифротексту,aes-cbc-hmac,так,TAMPER_DETECTED,20,ні,
+T02,Зміна першого байта шифротексту,aes-cbc-hmac,так,TAMPER_DETECTED,20,ні,
+T03,Зміна останнього байта тегу/HMAC,aes-cbc-hmac,так,TAMPER_DETECTED,20,ні,
+T04,Підміна IV/nonce у заголовку,aes-cbc-hmac,так,TAMPER_DETECTED,20,ні,
+T05,Підміна алгоритму/параметрів у заголовку (downgrade),aes-cbc-hmac,так,TAMPER_DETECTED,20,ні,
+T06,Підміна key_id у заголовку,aes-cbc-hmac,так,KEY_MISMATCH,23,ні,
+T07,Пошкодження сигнатури MAGIC,aes-cbc-hmac,так,BAD_MAGIC,10,ні,
+T08,Обрізання хвоста (−5 байтів),aes-cbc-hmac,так,TAMPER_DETECTED,20,ні,
+T09,Обрізання тіла (половина / по межі сегмента STREAM),aes-cbc-hmac,так,TAMPER_DETECTED,20,ні,
+T10,Обрізання до неповного заголовка,aes-cbc-hmac,так,TRUNCATED,12,ні,
+T11,Додавання 16 байтів у кінець,aes-cbc-hmac,так,TAMPER_DETECTED,20,ні,
+T12,Перестановка блоків 0↔1 (для STREAM — сегментів),aes-cbc-hmac,так,TAMPER_DETECTED,20,ні,
+T13,Неправильна AAD (контекст),aes-cbc-hmac,так,TAMPER_DETECTED,20,ні,
+T14,Неправильний пароль,aes-cbc-hmac,так,WRONG_PASSWORD,30,ні,"verifier у keystore, дешифрування не починалось"
+T15,Неправильний ключ (в обхід перевірки пароля),aes-cbc-hmac,так,AUTH_FAILED,21,ні,тег не збігся: підміна чи хибний ключ — нерозрізненно
+T00,Контроль: немодифікований файл,aes-ctr-hmac,НІ,—,0,так,очікується успіх
+T01,Інверсія біта в середині шифротексту,aes-ctr-hmac,так,TAMPER_DETECTED,20,ні,
+T02,Зміна першого байта шифротексту,aes-ctr-hmac,так,TAMPER_DETECTED,20,ні,
+T03,Зміна останнього байта тегу/HMAC,aes-ctr-hmac,так,TAMPER_DETECTED,20,ні,
+T04,Підміна IV/nonce у заголовку,aes-ctr-hmac,так,TAMPER_DETECTED,20,ні,
+T05,Підміна алгоритму/параметрів у заголовку (downgrade),aes-ctr-hmac,так,TAMPER_DETECTED,20,ні,
+T06,Підміна key_id у заголовку,aes-ctr-hmac,так,KEY_MISMATCH,23,ні,
+T07,Пошкодження сигнатури MAGIC,aes-ctr-hmac,так,BAD_MAGIC,10,ні,
+T08,Обрізання хвоста (−5 байтів),aes-ctr-hmac,так,TAMPER_DETECTED,20,ні,
+T09,Обрізання тіла (половина / по межі сегмента STREAM),aes-ctr-hmac,так,TAMPER_DETECTED,20,ні,
+T10,Обрізання до неповного заголовка,aes-ctr-hmac,так,TRUNCATED,12,ні,
+T11,Додавання 16 байтів у кінець,aes-ctr-hmac,так,TAMPER_DETECTED,20,ні,
+T12,Перестановка блоків 0↔1 (для STREAM — сегментів),aes-ctr-hmac,так,TAMPER_DETECTED,20,ні,
+T13,Неправильна AAD (контекст),aes-ctr-hmac,так,TAMPER_DETECTED,20,ні,
+T14,Неправильний пароль,aes-ctr-hmac,так,WRONG_PASSWORD,30,ні,"verifier у keystore, дешифрування не починалось"
+T15,Неправильний ключ (в обхід перевірки пароля),aes-ctr-hmac,так,AUTH_FAILED,21,ні,тег не збігся: підміна чи хибний ключ — нерозрізненно
+T00,Контроль: немодифікований файл,aes-cfb-hmac,НІ,—,0,так,очікується успіх
+T01,Інверсія біта в середині шифротексту,aes-cfb-hmac,так,TAMPER_DETECTED,20,ні,
+T02,Зміна першого байта шифротексту,aes-cfb-hmac,так,TAMPER_DETECTED,20,ні,
+T03,Зміна останнього байта тегу/HMAC,aes-cfb-hmac,так,TAMPER_DETECTED,20,ні,
+T04,Підміна IV/nonce у заголовку,aes-cfb-hmac,так,TAMPER_DETECTED,20,ні,
+T05,Підміна алгоритму/параметрів у заголовку (downgrade),aes-cfb-hmac,так,TAMPER_DETECTED,20,ні,
+T06,Підміна key_id у заголовку,aes-cfb-hmac,так,KEY_MISMATCH,23,ні,
+T07,Пошкодження сигнатури MAGIC,aes-cfb-hmac,так,BAD_MAGIC,10,ні,
+T08,Обрізання хвоста (−5 байтів),aes-cfb-hmac,так,TAMPER_DETECTED,20,ні,
+T09,Обрізання тіла (половина / по межі сегмента STREAM),aes-cfb-hmac,так,TAMPER_DETECTED,20,ні,
+T10,Обрізання до неповного заголовка,aes-cfb-hmac,так,TRUNCATED,12,ні,
+T11,Додавання 16 байтів у кінець,aes-cfb-hmac,так,TAMPER_DETECTED,20,ні,
+T12,Перестановка блоків 0↔1 (для STREAM — сегментів),aes-cfb-hmac,так,TAMPER_DETECTED,20,ні,
+T13,Неправильна AAD (контекст),aes-cfb-hmac,так,TAMPER_DETECTED,20,ні,
+T14,Неправильний пароль,aes-cfb-hmac,так,WRONG_PASSWORD,30,ні,"verifier у keystore, дешифрування не починалось"
+T15,Неправильний ключ (в обхід перевірки пароля),aes-cfb-hmac,так,AUTH_FAILED,21,ні,тег не збігся: підміна чи хибний ключ — нерозрізненно
+T00,Контроль: немодифікований файл,chacha20-poly1305,НІ,—,0,так,очікується успіх
+T01,Інверсія біта в середині шифротексту,chacha20-poly1305,так,TAMPER_DETECTED,20,ні,
+T02,Зміна першого байта шифротексту,chacha20-poly1305,так,TAMPER_DETECTED,20,ні,
+T03,Зміна останнього байта тегу/HMAC,chacha20-poly1305,так,TAMPER_DETECTED,20,ні,
+T04,Підміна IV/nonce у заголовку,chacha20-poly1305,так,TAMPER_DETECTED,20,ні,
+T05,Підміна алгоритму/параметрів у заголовку (downgrade),chacha20-poly1305,так,TAMPER_DETECTED,20,ні,
+T06,Підміна key_id у заголовку,chacha20-poly1305,так,KEY_MISMATCH,23,ні,
+T07,Пошкодження сигнатури MAGIC,chacha20-poly1305,так,BAD_MAGIC,10,ні,
+T08,Обрізання хвоста (−5 байтів),chacha20-poly1305,так,TAMPER_DETECTED,20,ні,
+T09,Обрізання тіла (половина / по межі сегмента STREAM),chacha20-poly1305,так,TRUNCATED,12,ні,
+T10,Обрізання до неповного заголовка,chacha20-poly1305,так,TRUNCATED,12,ні,
+T11,Додавання 16 байтів у кінець,chacha20-poly1305,так,TAMPER_DETECTED,20,ні,
+T12,Перестановка блоків 0↔1 (для STREAM — сегментів),chacha20-poly1305,так,TAMPER_DETECTED,20,ні,
+T13,Неправильна AAD (контекст),chacha20-poly1305,так,TAMPER_DETECTED,20,ні,
+T14,Неправильний пароль,chacha20-poly1305,так,WRONG_PASSWORD,30,ні,"verifier у keystore, дешифрування не починалось"
+T15,Неправильний ключ (в обхід перевірки пароля),chacha20-poly1305,так,AUTH_FAILED,21,ні,тег не збігся: підміна чи хибний ключ — нерозрізненно
+T00,Контроль: немодифікований файл,aes-gcm-siv,НІ,—,0,так,очікується успіх
+T01,Інверсія біта в середині шифротексту,aes-gcm-siv,так,TAMPER_DETECTED,20,ні,
+T02,Зміна першого байта шифротексту,aes-gcm-siv,так,TAMPER_DETECTED,20,ні,
+T03,Зміна останнього байта тегу/HMAC,aes-gcm-siv,так,TAMPER_DETECTED,20,ні,
+T04,Підміна IV/nonce у заголовку,aes-gcm-siv,так,TAMPER_DETECTED,20,ні,
+T05,Підміна алгоритму/параметрів у заголовку (downgrade),aes-gcm-siv,так,TAMPER_DETECTED,20,ні,
+T06,Підміна key_id у заголовку,aes-gcm-siv,так,KEY_MISMATCH,23,ні,
+T07,Пошкодження сигнатури MAGIC,aes-gcm-siv,так,BAD_MAGIC,10,ні,
+T08,Обрізання хвоста (−5 байтів),aes-gcm-siv,так,TAMPER_DETECTED,20,ні,
+T09,Обрізання тіла (половина / по межі сегмента STREAM),aes-gcm-siv,так,TRUNCATED,12,ні,
+T10,Обрізання до неповного заголовка,aes-gcm-siv,так,TRUNCATED,12,ні,
+T11,Додавання 16 байтів у кінець,aes-gcm-siv,так,TAMPER_DETECTED,20,ні,
+T12,Перестановка блоків 0↔1 (для STREAM — сегментів),aes-gcm-siv,так,TAMPER_DETECTED,20,ні,
+T13,Неправильна AAD (контекст),aes-gcm-siv,так,TAMPER_DETECTED,20,ні,
+T14,Неправильний пароль,aes-gcm-siv,так,WRONG_PASSWORD,30,ні,"verifier у keystore, дешифрування не починалось"
+T15,Неправильний ключ (в обхід перевірки пароля),aes-gcm-siv,так,AUTH_FAILED,21,ні,тег не збігся: підміна чи хибний ключ — нерозрізненно
+K01,Повторне використання nonce (зламаний RNG),aes-gcm,так,NONCE_REUSE,36,ні,відбиток nonce уже є в keystore — шифрування заблоковано
+K02,Дешифрування відкликаним ключем,aes-gcm,так,KEY_REVOKED,32,ні,статус revoked
+K03,Шифрування відкликаним ключем,aes-gcm,так,KEY_REVOKED,32,ні,
+I01,CBC без MAC: bit-flipping через IV (сума 0000100→9999100),"aes-cbc (без MAC, демо)",НІ,—,0,так,розшифровано без помилок: «AMOUNT=9999100;;»
+I02,CBC без MAC: зміна блоку C1 → підміна рахунку в P2,"aes-cbc (без MAC, демо)",НІ,—,0,так,"P2 = «TO=UA99999999000», P1 зіпсовано"
+I03,CTR без MAC: точкова підміна суми,"aes-ctr (без MAC, демо)",НІ,—,0,так,"«AMOUNT=9999999;;», решта тексту не пошкоджена"
+I04,Padding oracle: відновлення останнього блоку без ключа,"aes-cbc (без MAC, демо)",НІ,BAD_PADDING (оракул),22,—,відновлено b'4;CVV=987;EXP=1' за 1801 запитів
+I05,Padding oracle проти AES-CBC+HMAC (EtM),aes-cbc-hmac,так,AUTH_FAILED,21,ні,HMAC перевіряється до зняття доповнення — оракул не дає інформації
